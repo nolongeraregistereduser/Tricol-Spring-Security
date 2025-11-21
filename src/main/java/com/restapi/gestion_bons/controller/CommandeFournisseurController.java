@@ -8,6 +8,7 @@ import com.restapi.gestion_bons.service.commandeFournisseur.CommandeFournisseurS
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,18 +24,21 @@ public class CommandeFournisseurController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('COMMANDE_VIEW')")
     public ResponseEntity<List<CommandeFournisseurResponseDTO>> listAll(){
         List<CommandeFournisseurResponseDTO> commandes = commandeFournisseurService.findAll();
         return ResponseEntity.ok(commandes);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('COMMANDE_VIEW')")
     public ResponseEntity<CommandeFournisseurResponseDTO> getCommandeFournisseurById(@PathVariable Long id){
         CommandeFournisseurResponseDTO commandeFournisseur = commandeFournisseurService.findById(id);
         return ResponseEntity.ok(commandeFournisseur);
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('COMMANDE_CREATE')")
     public ResponseEntity<CommandeFournisseurResponseDTO> createCommandeFournisseur(
             @RequestBody @Valid
             CommandeFournisseurCreateDTO createDTO){
@@ -43,6 +47,7 @@ public class CommandeFournisseurController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('COMMANDE_UPDATE')")
     public ResponseEntity<CommandeFournisseurResponseDTO> updateCommandeFournisseur(
             @PathVariable Long id,
             @Valid @RequestBody CommandeFournisseurUpdateDTO fournisseurUpdateDTO
@@ -52,6 +57,7 @@ public class CommandeFournisseurController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCommandeFournisseur(
             @PathVariable Long id
     ){
@@ -60,6 +66,7 @@ public class CommandeFournisseurController {
     }
 
     @GetMapping("/fournisseur/{id}")
+    @PreAuthorize("hasAuthority('COMMANDE_VIEW')")
     public ResponseEntity<List<CommandeFournisseurResponseDTO>> getCommandeByFournisseurId(
             @PathVariable Long id
     ){
@@ -68,6 +75,7 @@ public class CommandeFournisseurController {
     }
 
     @PutMapping("/{id}/reception")
+    @PreAuthorize("hasAuthority('COMMANDE_RECEIVE')")
     public ResponseEntity<CommandeFournisseurResponseDTO> receptionnerCommande(
             @PathVariable Long id
     ){
@@ -76,6 +84,7 @@ public class CommandeFournisseurController {
     }
 
     @PutMapping("/{id}/valide")
+    @PreAuthorize("hasAuthority('COMMANDE_VALIDATE')")
     public ResponseEntity<CommandeFournisseurResponseDTO> valideCommande(
             @PathVariable Long id
     ){

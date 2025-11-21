@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -23,17 +24,20 @@ public class ProduitController {
     private final ProduitServiceContract produitService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('PRODUIT_VIEW')")
     public List<ProduitResponseDTO> listAll() {
         return produitService.findAll();
     }
 
-    @GetMapping("/paginated")  // ✅ Add pagination endpoint
+    @GetMapping("/paginated")
+    @PreAuthorize("hasAuthority('PRODUIT_VIEW')")
     public ResponseEntity<Page<ProduitResponseDTO>> listAllPaginated(Pageable pageable) {
         Page<ProduitResponseDTO> produits = produitService.findAllWithPagination(pageable);
         return ResponseEntity.ok(produits);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('PRODUIT_VIEW')")
     public ResponseEntity<ProduitResponseDTO> getById(@PathVariable Long id) {
         return produitService.findById(id)
                 .map(ResponseEntity::ok)
@@ -41,12 +45,14 @@ public class ProduitController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('PRODUIT_CREATE')")
     public ResponseEntity<ProduitResponseDTO> create(@RequestBody @Valid ProduitRequestDTO dto) {
         ProduitResponseDTO saved = produitService.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('PRODUIT_UPDATE')")
     public ResponseEntity<ProduitResponseDTO> update(@PathVariable Long id, @RequestBody @Valid ProduitRequestDTO dto) {
         try {
             ProduitResponseDTO updated = produitService.update(id, dto);
@@ -57,6 +63,7 @@ public class ProduitController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('PRODUIT_DELETE')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (produitService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -66,6 +73,7 @@ public class ProduitController {
     }
 
     @GetMapping("/ByName/{name}")
+    @PreAuthorize("hasAuthority('PRODUIT_VIEW')")
     public ResponseEntity<ProduitResponseDTO> getByName(@PathVariable String name) {
         return produitService.findByNom(name)
                 .map(ResponseEntity::ok)
@@ -73,6 +81,7 @@ public class ProduitController {
     }
 
     @GetMapping("/ByReference/{reference}")
+    @PreAuthorize("hasAuthority('PRODUIT_VIEW')")
     public ResponseEntity<ProduitResponseDTO> getByReference(@PathVariable String reference) {
         return produitService.findByReference(reference)
                 .map(ResponseEntity::ok)
@@ -80,6 +89,7 @@ public class ProduitController {
     }
 
     @GetMapping("/ByCategory/{category}")
+    @PreAuthorize("hasAuthority('PRODUIT_VIEW')")
     public ResponseEntity<List<ProduitResponseDTO>> getByCategory(@PathVariable String category) {
         List<ProduitResponseDTO> produits = produitService.findByCategorie(category);
         if (produits.isEmpty()) {
@@ -89,6 +99,7 @@ public class ProduitController {
     }
 
     @PostMapping("/initdb")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProduitResponseDTO>> initDb(){
         return ResponseEntity.ok(produitService.initDB());
     }

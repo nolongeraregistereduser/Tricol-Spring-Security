@@ -7,6 +7,7 @@ import com.restapi.gestion_bons.service.fournisseur.FournisseurService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,17 +22,20 @@ public class FournisseurController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('FOURNISSEUR_VIEW')")
     public ResponseEntity<List<FournisseurResponseDTO>> listAll() {
         List<FournisseurResponseDTO> fournisseurs = fournisseurService.findAll();
         return ResponseEntity.ok(fournisseurs);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('FOURNISSEUR_VIEW')")
     public ResponseEntity<FournisseurResponseDTO> getFournisseurById(@PathVariable Long id) {
         return ResponseEntity.ok(fournisseurService.findById(id));
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('FOURNISSEUR_CREATE')")
     public ResponseEntity<FournisseurResponseDTO> createFournisseur(
             @Valid @RequestBody FournisseurCreateDTO createDTO) {
         FournisseurResponseDTO created = fournisseurService.save(createDTO);
@@ -39,6 +43,7 @@ public class FournisseurController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('FOURNISSEUR_UPDATE')")
     public ResponseEntity<FournisseurResponseDTO> updateFournisseur(
             @PathVariable Long id,
             @Valid @RequestBody FournisseurUpdateDTO updateDTO) {
@@ -47,6 +52,7 @@ public class FournisseurController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('FOURNISSEUR_DELETE')")
     public ResponseEntity<Void> deleteFournisseur(@PathVariable Long id) {
         fournisseurService.delete(id);
         return ResponseEntity.noContent().build();
