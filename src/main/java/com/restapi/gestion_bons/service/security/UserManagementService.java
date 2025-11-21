@@ -91,6 +91,19 @@ public class UserManagementService {
                     .collect(Collectors.toList());
         }
         
+        // Apply user-specific permission overrides
+        List<UserPermission> userPermissions = userPermissionDAO.findByUserId(user.getId());
+        for (UserPermission up : userPermissions) {
+            String permName = up.getPermission().getName();
+            if (up.getGranted()) {
+                if (!permissions.contains(permName)) {
+                    permissions.add(permName);
+                }
+            } else {
+                permissions.remove(permName);
+            }
+        }
+        
         return UserResponseDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
