@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ligne-commande-table
+      author: system
+      changes:
+        - createTable:
+            tableName: ligne_commande
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: commande_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: produit_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantite_commandee
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prix_achat_unitaire
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: ligne_commande
+            baseColumnNames: commande_id
+            referencedTableName: commande_fournisseur
+            referencedColumnNames: id
+            constraintName: fk_ligne_commande_commande
+        - addForeignKeyConstraint:
+            baseTableName: ligne_commande
+            baseColumnNames: produit_id
+            referencedTableName: produit
+            referencedColumnNames: id
+            constraintName: fk_ligne_commande_produit

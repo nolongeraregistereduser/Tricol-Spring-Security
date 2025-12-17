@@ -1,0 +1,17 @@
+### Get stock global (état global du stock)
+GET http://localhost:8080/api/v1/stock
+
+### Get stock by produit ID (détail du stock par produit avec lots FIFO)
+GET http://localhost:8080/api/v1/stock/produit/1
+
+### Get all mouvements (historique des mouvements)
+GET http://localhost:8080/api/v1/stock/mouvements
+
+### Get mouvements by produit ID (mouvements d'un produit spécifique)
+GET http://localhost:8080/api/v1/stock/mouvements/produit/1
+
+### Get stock alerts (produits sous le seuil minimum)
+GET http://localhost:8080/api/v1/stock/alertes
+
+### Get stock valorisation (valorisation totale du stock - méthode FIFO)
+GET http://localhost:8080/api/v1/stock/valorisation

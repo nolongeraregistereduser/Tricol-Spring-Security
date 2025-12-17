@@ -1,0 +1,60 @@
+### Create fournisseur
+POST http://localhost:8080/api/v1/fournisseurs
+Content-Type: application/json
+
+{
+  "raisonSociale": "Fournisseur Test SARL",
+  "addressComplete": "123 Rue du Commerce, Casablanca",
+  "personneContact": "Mohammed Alami",
+  "email": "contact@fournisseurtest.ma",
+  "telephone": "+212612345678",
+  "ville": "Casablanca",
+  "ice": "001234567890123"
+}
+
+### List all fournisseurs
+GET http://localhost:8080/api/v1/fournisseurs
+
+### Get fournisseur by id
+GET http://localhost:8080/api/v1/fournisseurs/1
+
+### Update fournisseur
+PUT http://localhost:8080/api/v1/fournisseurs/1
+Content-Type: application/json
+
+{
+  "raisonSociale": "Fournisseur Test SARL - Updated",
+  "addressComplete": "456 Avenue Hassan II, Rabat",
+  "personneContact": "Fatima Benali",
+  "email": "contact.updated@fournisseurtest.ma",
+  "telephone": "+212698765432",
+  "ville": "Rabat",
+  "ice": "001234567890999"
+}
+
+### Delete fournisseur
+DELETE http://localhost:8080/api/v1/fournisseurs/1
+
+### Create another fournisseur
+POST http://localhost:8080/api/v1/fournisseurs
+Content-Type: application/json
+
+{
+  "raisonSociale": "Atlas Materials",
+  "addressComplete": "Zone Industrielle Ain Sebaa, Casablanca",
+  "personneContact": "Youssef Tazi",
+  "email": "y.tazi@atlasmaterials.ma",
+  "telephone": "+212522334455",
+  "ville": "Casablanca",
+  "ice": "002345678901234"
+}
+
+### Create fournisseur with minimal fields
+POST http://localhost:8080/api/v1/fournisseurs
+Content-Type: application/json
+
+{
+  "raisonSociale": "Quick Supplier",
+  "addressComplete": "Downtown Marrakech",
+  "email": "info@quicksupplier.ma"
+}

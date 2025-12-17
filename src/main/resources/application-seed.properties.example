@@ -1,0 +1,10 @@
+# Seed profile configuration
+# This file is activated when running with: mvn spring-boot:run -Dspring-boot.run.profiles=seed
+
+# Show SQL queries during seeding
+spring.jpa.show-sql=true
+
+# Enable debug logging for seeder
+logging.level.com.restapi.gestion_bons.seeder=DEBUG
+
+# Note: Do not set spring.profiles.active in profile-specific property files

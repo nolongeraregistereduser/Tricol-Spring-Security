@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-lot-table
+      author: system
+      changes:
+        - createTable:
+            tableName: lot
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: produit_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: numero_lot
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: date_entree
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantite_initiale
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantite_restante
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prix_achat_unitaire
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: statut
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: commande_fournisseur_id
+                  type: BIGINT
+              - column:
+                  name: mouvement_stock_id
+                  type: BIGINT
+              - column:
+                  name: date_creation
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: date_modification
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: lot
+            baseColumnNames: produit_id
+            referencedTableName: produit
+            referencedColumnNames: id
+            constraintName: fk_lot_produit
+            onDelete: CASCADE

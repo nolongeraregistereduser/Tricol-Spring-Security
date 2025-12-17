@@ -1,0 +1,50 @@
+### List all bons de sortie
+GET http://localhost:8080/api/v1/bons-sortie
+
+### Get bon de sortie by ID
+GET http://localhost:8080/api/v1/bons-sortie/1
+
+### Create bon de sortie (statut BROUILLON)
+POST http://localhost:8080/api/v1/bons-sortie
+Content-Type: application/json
+
+{
+  "dateSortie": "2025-01-15",
+  "motifSortie": "PRODUCTION",
+  "atelierId": 1,
+  "lignes": [
+    {
+      "produitId": 1,
+      "quantiteDemandee": 50
+    },
+    {
+      "produitId": 2,
+      "quantiteDemandee": 30
+    }
+  ]
+}
+
+### Update bon de sortie brouillon
+PUT http://localhost:8080/api/v1/bons-sortie/1
+Content-Type: application/json
+
+{
+  "dateSortie": "2025-01-16",
+  "motifSortie": "MAINTENANCE",
+  "atelierId": 1
+}
+
+### Validate bon de sortie (déclenche sorties FIFO)
+PUT http://localhost:8080/api/v1/bons-sortie/1/valider
+
+### Cancel bon de sortie brouillon
+PUT http://localhost:8080/api/v1/bons-sortie/2/annuler
+
+### Delete bon de sortie
+DELETE http://localhost:8080/api/v1/bons-sortie/3
+
+### Get bon de sortie by numero
+GET http://localhost:8080/api/v1/bons-sortie/numero/BS-000001
+
+### Get bons de sortie by atelier
+GET http://localhost:8080/api/v1/bons-sortie/atelier/1

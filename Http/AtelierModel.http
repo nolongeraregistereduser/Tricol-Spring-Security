@@ -1,0 +1,35 @@
+### List all ateliers
+GET http://localhost:8080/api/v1/ateliers
+
+### Get atelier by ID
+GET http://localhost:8080/api/v1/ateliers/1
+
+### Create atelier
+POST http://localhost:8080/api/v1/ateliers
+Content-Type: application/json
+
+{
+  "nom": "Atelier Couture"
+}
+
+### Create another atelier
+POST http://localhost:8080/api/v1/ateliers
+Content-Type: application/json
+
+{
+  "nom": "Atelier Finition"
+}
+
+### Update atelier
+PUT http://localhost:8080/api/v1/ateliers/1
+Content-Type: application/json
+
+{
+  "nom": "Atelier Couture - Bâtiment A"
+}
+
+### Delete atelier
+DELETE http://localhost:8080/api/v1/ateliers/3
+
+### Get atelier by nom
+GET http://localhost:8080/api/v1/ateliers/nom/Atelier Couture
