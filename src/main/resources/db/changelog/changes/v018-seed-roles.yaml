@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: v018-seed-roles
+      author: tricol-security
+      changes:
+        - insert: {tableName: role_app, columns: [{name: name, value: "ADMIN"}, {name: description, value: "System administrator"}]}
+        - insert: {tableName: role_app, columns: [{name: name, value: "RESPONSABLE_ACHATS"}, {name: description, value: "Purchase manager"}]}
+        - insert: {tableName: role_app, columns: [{name: name, value: "MAGASINIER"}, {name: description, value: "Warehouse keeper"}]}
+        - insert: {tableName: role_app, columns: [{name: name, value: "CHEF_ATELIER"}, {name: description, value: "Workshop manager"}]}

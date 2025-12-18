@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: v010-create-role-table
+      author: tricol-security
+      changes:
+        - createTable:
+            tableName: role_app
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: VARCHAR(255)

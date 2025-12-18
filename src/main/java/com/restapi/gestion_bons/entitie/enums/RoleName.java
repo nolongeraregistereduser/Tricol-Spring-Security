@@ -1,4 +1,8 @@
 package com.restapi.gestion_bons.entitie.enums;
 
-public class RoleName {
+public enum RoleName {
+    ADMIN,
+    RESPONSABLE_ACHATS,
+    MAGASINIER,
+    CHEF_ATELIER
 }

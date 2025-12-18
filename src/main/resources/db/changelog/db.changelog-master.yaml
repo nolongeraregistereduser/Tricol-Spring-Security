@@ -17,3 +17,27 @@ databaseChangeLog:
       file: db/changelog/changes/v008-create-bon-de-sortie-ligne.yaml
   - include:
       file: db/changelog/changes/v009-create-mouvement-stock.yaml
+
+  - include:
+      file: db/changelog/changes/v010-create-role-table.yaml
+  - include:
+      file: db/changelog/changes/v011-create-permission-table.yaml
+  - include:
+      file: db/changelog/changes/v012-create-role-permission-table.yaml
+  - include:
+      file: db/changelog/changes/v013-create-user-table.yaml
+  - include:
+      file: db/changelog/changes/v014-create-user-permission-table.yaml
+  - include:
+      file: db/changelog/changes/v015-create-refresh-token-table.yaml
+  - include:
+      file: db/changelog/changes/v016-create-audit-log-table.yaml
+
+  - include:
+      file: db/changelog/changes/v017-seed-permissions.yaml
+  - include:
+      file: db/changelog/changes/v018-seed-roles.yaml
+  - include:
+      file: db/changelog/changes/v019-seed-role-permissions.yaml
+  - include:
+      file: db/changelog/changes/v020-seed-admin-user.yaml

@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: v020-seed-admin-user
+      author: tricol-security
+      changes:
+        - insert:
+            tableName: user_app
+            columns:
+              - column: {name: username, value: "admin"}
+              - column: {name: email, value: "admin@tricol.com"}
+              - column: {name: password, value: "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"}
+              - column: {name: enabled, valueBoolean: true}
+              - column: {name: account_non_locked, valueBoolean: true}
+              - column: {name: role_id, value: 1}
