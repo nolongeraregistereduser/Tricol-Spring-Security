@@ -74,7 +74,6 @@ public class DeliveryNoteServiceSimpleTest {
         testDeliveryNote.getDeliveryNoteLines().add(line);
     }
 
-    // Task 1.2 - Test 1: Validation triggers stock movements
     @Test
     void test1_ValidationTriggersStockMovements() {
         when(deliveryNoteRepository.findById(1L)).thenReturn(Optional.of(testDeliveryNote));
@@ -95,7 +94,6 @@ public class DeliveryNoteServiceSimpleTest {
         System.out.println("TEST 1 PASSED : VALIDATION TRIGGERS STOCK MOVEMENTS!!!");
     }
 
-    // Task 1.2 - Test 2: Cannot validate already validated
     @Test
     void test2_CannotValidateAlreadyValidated() {
         testDeliveryNote.setStatus(ExitOrderStatus.VALIDE);
@@ -110,7 +108,6 @@ public class DeliveryNoteServiceSimpleTest {
         System.out.println("TEST 2 PASSED : CANNOT VALIDATE TWICE!!!");
     }
 
-    // Task 1.2 - Test 3: Cannot validate cancelled
     @Test
     void test3_CannotValidateCancelled() {
         testDeliveryNote.setStatus(ExitOrderStatus.ANNULE);
@@ -125,7 +122,6 @@ public class DeliveryNoteServiceSimpleTest {
         System.out.println("TEST 3 PASSED : CANNOT VALIDATE CANCELLED NOTE!!!");
     }
 
-    // Task 1.2 - Test 4: Validation with multiple products
     @Test
     void test4_ValidationWithMultipleProducts() {
         Product product2 = Product.builder()

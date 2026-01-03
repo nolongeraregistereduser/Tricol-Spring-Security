@@ -13,7 +13,7 @@ public class StockMovementSpecification {
             if (dateDebut == null && dateFin == null) {
                 return null;
             }
-            
+
             if (dateDebut != null && dateFin != null) {
                 return criteriaBuilder.between(root.get("movementDate"), dateDebut, dateFin);
             } else if (dateDebut != null) {
@@ -67,42 +67,14 @@ public class StockMovementSpecification {
             String reference,
             MovementType type,
             String numeroLot) {
-        
-        return (root, query, criteriaBuilder) -> {
-            var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
-            
-            Specification<StockMovement> dateSpec = hasDateBetween(dateDebut, dateFin);
-            if (dateSpec != null) {
-                var predicate = dateSpec.toPredicate(root, query, criteriaBuilder);
-                if (predicate != null) predicates.add(predicate);
-            }
-            
-            Specification<StockMovement> productIdSpec = hasProductId(produitId);
-            if (productIdSpec != null) {
-                var predicate = productIdSpec.toPredicate(root, query, criteriaBuilder);
-                if (predicate != null) predicates.add(predicate);
-            }
-            
-            Specification<StockMovement> referenceSpec = hasProductReference(reference);
-            if (referenceSpec != null) {
-                var predicate = referenceSpec.toPredicate(root, query, criteriaBuilder);
-                if (predicate != null) predicates.add(predicate);
-            }
-            
-            Specification<StockMovement> typeSpec = hasMovementType(type);
-            if (typeSpec != null) {
-                var predicate = typeSpec.toPredicate(root, query, criteriaBuilder);
-                if (predicate != null) predicates.add(predicate);
-            }
-            
-            Specification<StockMovement> batchSpec = hasBatchNumber(numeroLot);
-            if (batchSpec != null) {
-                var predicate = batchSpec.toPredicate(root, query, criteriaBuilder);
-                if (predicate != null) predicates.add(predicate);
-            }
-            
-            return criteriaBuilder.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
-        };
+
+        return Specification.allOf(
+                hasDateBetween(dateDebut, dateFin),
+                hasProductId(produitId),
+                hasProductReference(reference),
+                hasMovementType(type),
+                hasBatchNumber(numeroLot)
+        );
     }
 }
 

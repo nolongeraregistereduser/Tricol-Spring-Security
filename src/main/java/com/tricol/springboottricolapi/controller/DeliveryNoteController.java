@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,16 +21,16 @@ public class DeliveryNoteController {
 
     private final DeliveryNoteService deliveryNoteService;
 
-
     @PostMapping
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'CREATE_EXIT_ORDER')")
     public ResponseEntity<DeliveryNoteResponseDTO> createDeliveryNote(
             @Valid @RequestBody DeliveryNoteRequestDTO requestDTO) {
         DeliveryNoteResponseDTO created = deliveryNoteService.createDeliveryNote(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-
     @PutMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'CREATE_EXIT_ORDER')")
     public ResponseEntity<DeliveryNoteResponseDTO> updateDeliveryNote(
             @PathVariable Long id,
             @Valid @RequestBody DeliveryNoteRequestDTO requestDTO) {
@@ -37,8 +38,8 @@ public class DeliveryNoteController {
         return ResponseEntity.ok(updated);
     }
 
-
     @DeleteMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'CREATE_EXIT_ORDER')")
     public ResponseEntity<Map<String, String>> deleteDeliveryNote(@PathVariable Long id) {
         deliveryNoteService.deleteDeliveryNote(id);
         Map<String, String> response = new HashMap<>();
@@ -47,37 +48,37 @@ public class DeliveryNoteController {
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_DELIVERY_NOTE')")
     public ResponseEntity<List<DeliveryNoteResponseDTO>> getAllDeliveryNotes() {
         List<DeliveryNoteResponseDTO> notes = deliveryNoteService.getAllDeliveryNotes();
         return ResponseEntity.ok(notes);
     }
 
-
     @GetMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_DELIVERY_NOTE')")
     public ResponseEntity<DeliveryNoteResponseDTO> getDeliveryNoteById(@PathVariable Long id) {
         DeliveryNoteResponseDTO note = deliveryNoteService.getDeliveryNoteById(id);
         return ResponseEntity.ok(note);
     }
 
-
     @GetMapping("/atelier/{atelier}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_DELIVERY_NOTE')")
     public ResponseEntity<List<DeliveryNoteResponseDTO>> getDeliveryNotesByWorkshop(
             @PathVariable String atelier) {
         List<DeliveryNoteResponseDTO> notes = deliveryNoteService.getDeliveryNotesByWorkshop(atelier);
         return ResponseEntity.ok(notes);
     }
 
-
     @PutMapping("/{id}/valider")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'VALIDATE_EXIT_ORDER')")
     public ResponseEntity<DeliveryNoteResponseDTO> validateDeliveryNote(@PathVariable Long id) {
         DeliveryNoteResponseDTO validated = deliveryNoteService.validateDeliveryNote(id);
         return ResponseEntity.ok(validated);
     }
 
-
     @PutMapping("/{id}/annuler")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'VALIDATE_EXIT_ORDER')")
     public ResponseEntity<DeliveryNoteResponseDTO> cancelDeliveryNote(@PathVariable Long id) {
         DeliveryNoteResponseDTO cancelled = deliveryNoteService.cancelDeliveryNote(id);
         return ResponseEntity.ok(cancelled);

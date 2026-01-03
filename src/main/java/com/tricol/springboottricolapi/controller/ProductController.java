@@ -7,6 +7,7 @@ import com.tricol.springboottricolapi.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,24 +24,28 @@ public class ProductController {
     }
 
     @GetMapping
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_PRODUCT')")
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
         List<ProductResponseDTO> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_PRODUCT')")
     public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long id) {
         ProductResponseDTO product = productService.getProductById(id);
         return ResponseEntity.ok(product);
     }
 
     @PostMapping
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'CREATE_PRODUCT')")
     public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductRequestDTO requestDTO) {
         ProductResponseDTO createdProduct = productService.createProduct(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'UPDATE_PRODUCT')")
     public ResponseEntity<ProductResponseDTO> updateProduct(
             @PathVariable Long id,
             @Valid @RequestBody ProductRequestDTO requestDTO) {
@@ -49,6 +54,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'DELETE_PRODUCT')")
     public ResponseEntity<Map<String, String>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(Map.of(
@@ -58,6 +64,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/stock")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_STOCK')")
     public ResponseEntity<ProductStockDTO> getProductStock(@PathVariable Long id) {
         ProductStockDTO stock = productService.getProductStock(id);
         return ResponseEntity.ok(stock);

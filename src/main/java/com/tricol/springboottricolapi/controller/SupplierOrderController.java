@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -25,8 +26,8 @@ public class SupplierOrderController {
         this.orderService = orderService;
     }
 
-
     @GetMapping
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_SUPPLIER_ORDER')")
     public ResponseEntity<List<SupplierOrderResponseDTO>> getAllOrders(
             @RequestParam(required = false) OrderStatus status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -45,29 +46,29 @@ public class SupplierOrderController {
         return ResponseEntity.ok(orders);
     }
 
-
     @GetMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_SUPPLIER_ORDER')")
     public ResponseEntity<SupplierOrderResponseDTO> getOrderById(@PathVariable Long id) {
         SupplierOrderResponseDTO order = orderService.getOrderById(id);
         return ResponseEntity.ok(order);
     }
 
-
     @GetMapping("/fournisseur/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_SUPPLIER_ORDER')")
     public ResponseEntity<List<SupplierOrderResponseDTO>> getOrdersBySupplierId(@PathVariable Long id) {
         List<SupplierOrderResponseDTO> orders = orderService.getOrdersBySupplierId(id);
         return ResponseEntity.ok(orders);
     }
 
-
     @PostMapping
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'CREATE_SUPPLIER_ORDER')")
     public ResponseEntity<SupplierOrderResponseDTO> createOrder(@Valid @RequestBody SupplierOrderRequestDTO requestDTO) {
         SupplierOrderResponseDTO createdOrder = orderService.createOrder(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
 
-
     @PutMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'UPDATE_SUPPLIER_ORDER')")
     public ResponseEntity<SupplierOrderResponseDTO> updateOrder(
             @PathVariable Long id,
             @Valid @RequestBody SupplierOrderRequestDTO requestDTO) {
@@ -75,8 +76,8 @@ public class SupplierOrderController {
         return ResponseEntity.ok(updatedOrder);
     }
 
-
     @DeleteMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'DELETE_SUPPLIER_ORDER')")
     public ResponseEntity<Map<String, String>> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
         Map<String, String> response = new HashMap<>();
@@ -85,25 +86,24 @@ public class SupplierOrderController {
         return ResponseEntity.ok(response);
     }
 
-
     @PutMapping("/{id}/valider")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'VALIDATE_SUPPLIER_ORDER')")
     public ResponseEntity<SupplierOrderResponseDTO> validateOrder(@PathVariable Long id) {
         SupplierOrderResponseDTO validatedOrder = orderService.validateOrder(id);
         return ResponseEntity.ok(validatedOrder);
     }
 
-
     @PutMapping("/{id}/annuler")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'UPDATE_SUPPLIER_ORDER')")
     public ResponseEntity<SupplierOrderResponseDTO> cancelOrder(@PathVariable Long id) {
         SupplierOrderResponseDTO cancelledOrder = orderService.cancelOrder(id);
         return ResponseEntity.ok(cancelledOrder);
     }
 
-
     @PutMapping("/{id}/reception")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'RECEIVE_DELIVERY')")
     public ResponseEntity<SupplierOrderResponseDTO> receiveOrder(@PathVariable Long id) {
         SupplierOrderResponseDTO receivedOrder = orderService.receiveOrder(id);
         return ResponseEntity.ok(receivedOrder);
     }
 }
-

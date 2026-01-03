@@ -1,181 +1,157 @@
 --liquibase formatted sql
 
 -- changeset tricol:1
-
 CREATE TABLE suppliers (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    raison_sociale VARCHAR(150) NOT NULL,
-    address TEXT,
-    city VARCHAR(100),
-    ice VARCHAR(50),
-    contact_person VARCHAR(100),
-    email VARCHAR(120),
-    phone VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                           id BIGSERIAL PRIMARY KEY,
+                           raison_sociale VARCHAR(150) NOT NULL,
+                           address TEXT,
+                           city VARCHAR(100),
+                           ice VARCHAR(50),
+                           contact_person VARCHAR(100),
+                           email VARCHAR(120),
+                           phone VARCHAR(50),
+                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 
 -- changeset tricol:2
 CREATE TABLE categories (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description TEXT
+                            id BIGSERIAL PRIMARY KEY,
+                            name VARCHAR(100) NOT NULL,
+                            description TEXT
 );
-
 
 -- changeset tricol:3
 CREATE TABLE products (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    reference VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(150) NOT NULL,
-    description TEXT,
-    unit_price DECIMAL(12,2) NOT NULL,
-    category_id BIGINT,
-    current_stock DECIMAL(12,3) DEFAULT 0,
-    reorder_point DECIMAL(12,3) DEFAULT 0,
-    unit_of_measure VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+                          id BIGSERIAL PRIMARY KEY,
+                          reference VARCHAR(50) UNIQUE NOT NULL,
+                          name VARCHAR(150) NOT NULL,
+                          description TEXT,
+                          unit_price DECIMAL(12,2) NOT NULL,
+                          category_id BIGINT,
+                          current_stock DECIMAL(12,3) DEFAULT 0,
+                          reorder_point DECIMAL(12,3) DEFAULT 0,
+                          unit_of_measure VARCHAR(50),
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );
-
 
 -- changeset tricol:4
 CREATE TABLE supplier_orders (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    supplier_id BIGINT,
-    order_date DATE NOT NULL,
-    status VARCHAR(20) DEFAULT 'PENDING',
-    total_amount DECIMAL(14,2) DEFAULT 0,
-    reception_date DATE,
-    comments TEXT,
-    FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE,
-    CONSTRAINT chk_status CHECK (status IN ('PENDING','APPROVED','DELIVERED','CANCELLED'))
+                                 id BIGSERIAL PRIMARY KEY,
+                                 supplier_id BIGINT,
+                                 order_date DATE NOT NULL,
+                                 status VARCHAR(20) DEFAULT 'PENDING',
+                                 total_amount DECIMAL(14,2) DEFAULT 0,
+                                 reception_date DATE,
+                                 comments TEXT,
+                                 FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE,
+                                 CONSTRAINT chk_status CHECK (status IN ('PENDING','APPROVED','DELIVERED','CANCELLED'))
 );
-
 
 -- changeset tricol:5
 CREATE TABLE supplier_order_lines (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    order_id BIGINT,
-    product_id BIGINT,
-    quantity DECIMAL(12,3) NOT NULL,
-    unit_purchase_price DECIMAL(12,3) NOT NULL,
-    line_total DECIMAL(14,2) AS (quantity * unit_purchase_price) STORED,
-    FOREIGN KEY (order_id) REFERENCES supplier_orders(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+                                      id BIGSERIAL PRIMARY KEY,
+                                      order_id BIGINT,
+                                      product_id BIGINT,
+                                      quantity DECIMAL(12,3) NOT NULL,
+                                      unit_purchase_price DECIMAL(12,3) NOT NULL,
+                                      line_total DECIMAL(14,2) GENERATED ALWAYS AS (quantity * unit_purchase_price) STORED,
+                                      FOREIGN KEY (order_id) REFERENCES supplier_orders(id) ON DELETE CASCADE,
+                                      FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
-
 
 -- changeset tricol:6
 CREATE TABLE stock_batches (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    product_id BIGINT,
-    batch_number VARCHAR(100) UNIQUE NOT NULL,
-    entry_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    initial_quantity DECIMAL(12,3) NOT NULL,
-    remaining_quantity DECIMAL(12,3) NOT NULL,
-    unit_purchase_price DECIMAL(12,3) NOT NULL,
-    supplier_order_id BIGINT,
-    CONSTRAINT chk_quantities CHECK (remaining_quantity >= 0),
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-    FOREIGN KEY (supplier_order_id) REFERENCES supplier_orders(id)
+                               id BIGSERIAL PRIMARY KEY,
+                               product_id BIGINT,
+                               batch_number VARCHAR(100) UNIQUE NOT NULL,
+                               entry_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                               initial_quantity DECIMAL(12,3) NOT NULL,
+                               remaining_quantity DECIMAL(12,3) NOT NULL,
+                               unit_purchase_price DECIMAL(12,3) NOT NULL,
+                               supplier_order_id BIGINT,
+                               CONSTRAINT chk_quantities CHECK (remaining_quantity >= 0),
+                               FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+                               FOREIGN KEY (supplier_order_id) REFERENCES supplier_orders(id)
 );
-
 
 -- changeset tricol:7
 CREATE TABLE stock_movements (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    product_id BIGINT,
-    batch_id BIGINT,
-    movement_type VARCHAR(10),
-    quantity DECIMAL(12,3) NOT NULL,
-    movement_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    source VARCHAR(100),
-    source_reference BIGINT,
-    comments TEXT,
-    FOREIGN KEY (product_id) REFERENCES products(id),
-    FOREIGN KEY (batch_id) REFERENCES stock_batches(id),
-    CONSTRAINT chk_movement_type CHECK (movement_type IN ('IN','OUT'))
+                                 id BIGSERIAL PRIMARY KEY,
+                                 product_id BIGINT,
+                                 batch_id BIGINT,
+                                 movement_type VARCHAR(10),
+                                 quantity DECIMAL(12,3) NOT NULL,
+                                 movement_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                 source VARCHAR(100),
+                                 source_reference BIGINT,
+                                 comments TEXT,
+                                 FOREIGN KEY (product_id) REFERENCES products(id),
+                                 FOREIGN KEY (batch_id) REFERENCES stock_batches(id),
+                                 CONSTRAINT chk_movement_type CHECK (movement_type IN ('IN','OUT'))
 );
-
 
 -- changeset tricol:8
 CREATE TABLE delivery_notes (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    note_number VARCHAR(50) UNIQUE NOT NULL,
-    delivery_date DATE NOT NULL,
-    receiving_department VARCHAR(100) NOT NULL,
-    delivery_reason VARCHAR(20) DEFAULT 'PRODUCTION',
-    status VARCHAR(20) DEFAULT 'DRAFT',
-    comments TEXT,
-    CONSTRAINT chk_delivery_reason CHECK (delivery_reason IN ('PRODUCTION','MAINTENANCE','OTHER')),
-    CONSTRAINT chk_delivery_status CHECK (status IN ('DRAFT','APPROVED','CANCELLED'))
+                                id BIGSERIAL PRIMARY KEY,
+                                note_number VARCHAR(50) UNIQUE NOT NULL,
+                                delivery_date DATE NOT NULL,
+                                receiving_department VARCHAR(100) NOT NULL,
+                                delivery_reason VARCHAR(20) DEFAULT 'PRODUCTION',
+                                status VARCHAR(20) DEFAULT 'DRAFT',
+                                comments TEXT,
+                                CONSTRAINT chk_delivery_reason CHECK (delivery_reason IN ('PRODUCTION','MAINTENANCE','OTHER')),
+                                CONSTRAINT chk_delivery_status CHECK (status IN ('DRAFT','APPROVED','CANCELLED'))
 );
-
-
-
 
 -- changeset tricol:9
 CREATE TABLE delivery_note_lines (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    delivery_note_id BIGINT,
-    product_id BIGINT,
-    quantity DECIMAL(12,3) NOT NULL,
-    FOREIGN KEY (delivery_note_id) REFERENCES delivery_notes(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id)
+                                     id BIGSERIAL PRIMARY KEY,
+                                     delivery_note_id BIGINT,
+                                     product_id BIGINT,
+                                     quantity DECIMAL(12,3) NOT NULL,
+                                     FOREIGN KEY (delivery_note_id) REFERENCES delivery_notes(id) ON DELETE CASCADE,
+                                     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
-
 -- changeset tricol:10
--- Fix: Replace category_id with category string field
-ALTER TABLE products DROP FOREIGN KEY products_ibfk_1;
-ALTER TABLE products DROP COLUMN category_id;
+ALTER TABLE products DROP CONSTRAINT IF EXISTS products_ibfk_1;
+ALTER TABLE products DROP COLUMN IF EXISTS category_id;
 ALTER TABLE products ADD COLUMN category VARCHAR(100) NOT NULL DEFAULT 'General';
 
-
 -- changeset tricol:11
--- Fix: Update supplier_orders status constraint to match French enum values
-ALTER TABLE supplier_orders DROP CONSTRAINT chk_status;
+ALTER TABLE supplier_orders DROP CONSTRAINT IF EXISTS chk_status;
 ALTER TABLE supplier_orders ADD CONSTRAINT chk_status CHECK (status IN ('EN_ATTENTE','VALIDEE','LIVREE','ANNULEE'));
-ALTER TABLE supplier_orders MODIFY status VARCHAR(20) DEFAULT 'EN_ATTENTE';
-
+ALTER TABLE supplier_orders ALTER COLUMN status SET DEFAULT 'EN_ATTENTE';
 
 -- changeset tricol:12
--- Add missing columns to supplier_orders table
 ALTER TABLE supplier_orders ADD COLUMN IF NOT EXISTS order_number VARCHAR(50) UNIQUE;
 ALTER TABLE supplier_orders ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE supplier_orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
-
+ALTER TABLE supplier_orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
 -- changeset tricol:13
--- Fix: Update delivery_notes column names to match entity
-ALTER TABLE delivery_notes CHANGE delivery_date exit_date DATE NOT NULL;
-ALTER TABLE delivery_notes CHANGE receiving_department workshop VARCHAR(100) NOT NULL;
-ALTER TABLE delivery_notes CHANGE delivery_reason exit_reason VARCHAR(20) DEFAULT 'PRODUCTION';
+ALTER TABLE delivery_notes RENAME COLUMN delivery_date TO exit_date;
+ALTER TABLE delivery_notes RENAME COLUMN receiving_department TO workshop;
+ALTER TABLE delivery_notes RENAME COLUMN delivery_reason TO exit_reason;
 ALTER TABLE delivery_notes ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE delivery_notes ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
-ALTER TABLE delivery_notes DROP CONSTRAINT chk_delivery_reason;
-ALTER TABLE delivery_notes DROP CONSTRAINT chk_delivery_status;
+ALTER TABLE delivery_notes ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE delivery_notes DROP CONSTRAINT IF EXISTS chk_delivery_reason;
+ALTER TABLE delivery_notes DROP CONSTRAINT IF EXISTS chk_delivery_status;
 ALTER TABLE delivery_notes ADD CONSTRAINT chk_exit_reason CHECK (exit_reason IN ('PRODUCTION','MAINTENANCE','AUTRE'));
 ALTER TABLE delivery_notes ADD CONSTRAINT chk_exit_status CHECK (status IN ('BROUILLON','VALIDE','ANNULE'));
-ALTER TABLE delivery_notes MODIFY status VARCHAR(20) DEFAULT 'BROUILLON';
-
+ALTER TABLE delivery_notes ALTER COLUMN status SET DEFAULT 'BROUILLON';
 
 -- changeset tricol:14
--- Fix: Update stock_movements to add unit_price column
 ALTER TABLE stock_movements ADD COLUMN IF NOT EXISTS unit_price DECIMAL(12,3);
 
-
 -- changeset tricol:15
--- Fix: Update stock_movements movement_type constraint to match Java enum (ENTREE/SORTIE)
 ALTER TABLE stock_movements DROP CONSTRAINT IF EXISTS chk_movement_type;
 ALTER TABLE stock_movements ADD CONSTRAINT chk_movement_type CHECK (movement_type IN ('ENTREE','SORTIE'));
 
+-- changeset tricol:16
+ALTER TABLE delivery_notes ADD COLUMN cout_total DECIMAL(14,2) NULL DEFAULT 0;
 
---changeset tricol:16
-ALTER TABLE delivery_notes ADD COLUMN cout_total  DECIMAL(14,2) NULL DEFAULT 0;
-
---changeset tricol:17
-ALTER TABLE delivery_notes DROP COLUMN cout_total;
+-- changeset tricol:17
+ALTER TABLE delivery_notes DROP COLUMN IF EXISTS cout_total;

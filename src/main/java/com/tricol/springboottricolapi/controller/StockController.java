@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -29,18 +30,21 @@ public class StockController {
     private final StockService stockService;
 
     @GetMapping
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_STOCK')")
     public ResponseEntity<List<ProductStockDTO>> getGlobalStockOverview() {
         List<ProductStockDTO> globalStock = stockService.getGlobalStockOverview();
         return ResponseEntity.ok(globalStock);
     }
 
     @GetMapping("/produit/{productId}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_STOCK')")
     public ResponseEntity<ProductStockDetailDTO> getProductStockDetail(@PathVariable Long productId) {
         ProductStockDetailDTO stockDetail = stockService.getProductStockDetail(productId);
         return ResponseEntity.ok(stockDetail);
     }
 
     @GetMapping("/mouvements")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_STOCK')")
     public ResponseEntity<Page<StockMovementResponseDTO>> searchMovements(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin,
@@ -50,7 +54,7 @@ public class StockController {
             @RequestParam(required = false) String numeroLot,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "movementDate,desc") String[] sort) {
+            @RequestParam(defaultValue = "movementDate") String[] sort) {
         
         LocalDateTime dateDebutTime = dateDebut != null ? dateDebut.atStartOfDay() : null;
         LocalDateTime dateFinTime = dateFin != null ? dateFin.atTime(23, 59, 59) : null;
@@ -78,21 +82,23 @@ public class StockController {
     }
 
     @GetMapping("/mouvements/produit/{productId}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_STOCK')")
     public ResponseEntity<List<StockMovementResponseDTO>> getMovementsByProduct(@PathVariable Long productId) {
         List<StockMovementResponseDTO> movements = stockService.getMovementsByProduct(productId);
         return ResponseEntity.ok(movements);
     }
 
     @GetMapping("/alertes")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_STOCK')")
     public ResponseEntity<List<StockAlertDTO>> getStockAlerts() {
         List<StockAlertDTO> alerts = stockService.getStockAlerts();
         return ResponseEntity.ok(alerts);
     }
 
     @GetMapping("/valorisation")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_STOCK')")
     public ResponseEntity<StockValuationDTO> getStockValuation() {
         StockValuationDTO valuation = stockService.getStockValuation();
         return ResponseEntity.ok(valuation);
     }
 }
-

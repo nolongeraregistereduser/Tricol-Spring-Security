@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,30 +19,30 @@ public class SupplierController {
 
     private final SupplierService supplierService;
 
-
     @GetMapping
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_SUPPLIER')")
     public ResponseEntity<List<SupplierResponseDTO>> getAllSuppliers() {
         List<SupplierResponseDTO> suppliers = supplierService.getAllSuppliers();
         return ResponseEntity.ok(suppliers);
     }
 
-
     @GetMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'READ_SUPPLIER')")
     public ResponseEntity<SupplierResponseDTO> getSupplierById(@PathVariable Long id) {
         SupplierResponseDTO supplier = supplierService.getSupplierById(id);
         return ResponseEntity.ok(supplier);
     }
 
-
     @PostMapping
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'CREATE_SUPPLIER')")
     public ResponseEntity<SupplierResponseDTO> createSupplier(
             @Valid @RequestBody SupplierRequestDTO requestDTO) {
         SupplierResponseDTO createdSupplier = supplierService.createSupplier(requestDTO);
         return new ResponseEntity<>(createdSupplier, HttpStatus.CREATED);
     }
 
-
     @PutMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'UPDATE_SUPPLIER')")
     public ResponseEntity<SupplierResponseDTO> updateSupplier(
             @PathVariable Long id,
             @Valid @RequestBody SupplierRequestDTO requestDTO) {
@@ -49,8 +50,8 @@ public class SupplierController {
         return ResponseEntity.ok(updatedSupplier);
     }
 
-    
     @DeleteMapping("/{id}")
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'DELETE_SUPPLIER')")
     public ResponseEntity<Void> deleteSupplier(@PathVariable Long id) {
         supplierService.deleteSupplier(id);
         return ResponseEntity.noContent().build();

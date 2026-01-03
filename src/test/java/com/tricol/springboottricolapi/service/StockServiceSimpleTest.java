@@ -4,9 +4,11 @@ import com.tricol.springboottricolapi.entity.Product;
 import com.tricol.springboottricolapi.entity.StockBatch;
 import com.tricol.springboottricolapi.entity.SupplierOrder;
 import com.tricol.springboottricolapi.entity.SupplierOrderLine;
+import com.tricol.springboottricolapi.exception.InsufficientStockException;
 import com.tricol.springboottricolapi.repository.ProductRepository;
 import com.tricol.springboottricolapi.repository.StockBatchRepository;
 import com.tricol.springboottricolapi.repository.StockMovementRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +57,7 @@ public class StockServiceSimpleTest {
                 .build();
     }
 
-    //Scenario 1: Partial consumption of single batch
+
     @Test
     void test1_SimpleFifo_PartialConsumption(){
 
@@ -72,7 +74,7 @@ public class StockServiceSimpleTest {
         when(stockBatchRepository.save(any(StockBatch.class))).thenReturn(batch);
 
         stockService.processStockExit(
-                1l,
+                1L,
                 BigDecimal.valueOf(30),
                 "REF-001",
                 "Test exit"
@@ -87,7 +89,6 @@ public class StockServiceSimpleTest {
 
 
 
-    //Scenario 2: Multiple batches consumption
     @Test
     void test2_Fifo_MultipleConsumption(){
 
@@ -142,7 +143,6 @@ public class StockServiceSimpleTest {
     }
 
 
-    //Scenario 3: Insufficient stock error
     @Test
     void test3_InsufficientStock_ThrowsError(){
         testProduct.setCurrentStock(BigDecimal.valueOf(50));
@@ -151,14 +151,13 @@ public class StockServiceSimpleTest {
         assertThatThrownBy(()-> {
             stockService.processStockExit(1L,BigDecimal.valueOf(100),"REF-003","Too much!");
         })
-                .isInstanceOf(Exception.class)
+                .isInstanceOf(InsufficientStockException.class)
                 .hasMessageContaining("T-Shirt");
 
         System.out.println("TEST 3 PASSED : ERROR THROWN WHEN NOT ENOUGH STOCK!!!");
 
     }
 
-    //Scenario 4: Exact stock exhaustion
     @Test
     void test6_Fifo_ExactExhaustion(){
         StockBatch batch = new StockBatch();
@@ -188,7 +187,6 @@ public class StockServiceSimpleTest {
     }
 
 
-    // Task 1.1.B
     @Test
     void test4_CreateBatch_FromSupplierOrder(){
         SupplierOrder order = SupplierOrder.builder()
@@ -220,7 +218,6 @@ public class StockServiceSimpleTest {
     }
 
 
-    //1.1.C
     @Test
     void test5_StockValuation_CalculatesCorrectly(){
         StockBatch batch1 = new StockBatch();
