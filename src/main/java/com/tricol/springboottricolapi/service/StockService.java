@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class StockService {
+public class StockService implements IStockService {
 
     private final StockBatchRepository stockBatchRepository;
     private final StockMovementRepository stockMovementRepository;

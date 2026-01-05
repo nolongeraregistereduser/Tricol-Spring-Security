@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ProductService {
+public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;

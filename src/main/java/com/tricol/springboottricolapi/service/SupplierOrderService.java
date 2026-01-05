@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class SupplierOrderService {
+public class SupplierOrderService implements ISupplierOrderService {
 
     private final SupplierOrderRepository orderRepository;
     private final SupplierRepository supplierRepository;

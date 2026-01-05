@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class SupplierService {
+public class SupplierService implements ISupplierService {
 
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;

@@ -8,12 +8,14 @@ import com.tricol.springboottricolapi.repository.PermissionRepository;
 import com.tricol.springboottricolapi.repository.UserPermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.stream.Collectors;
+
 
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class PermissionService {
+public class PermissionService implements IPermissionService {
 
     private final UserPermissionRepository userPermissionRepository;
     private final PermissionRepository permissionRepository;
@@ -81,4 +83,15 @@ public class PermissionService {
             }
         }
     }
+
+
+    public Set<String> getUserPermissionsByRoles(Set<RoleApp> roles) {
+    Set<String> permissions = new HashSet<>();
+    for (RoleApp role : roles) {
+        permissions.addAll(ROLE_PERMISSIONS.getOrDefault(role, Collections.emptySet()));
+    }
+    return permissions;
+    }
+
+
 }

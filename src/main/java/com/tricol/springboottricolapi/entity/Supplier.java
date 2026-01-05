@@ -59,5 +59,4 @@ public class Supplier {
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SupplierOrder> orders = new ArrayList<>();
 
-
 }

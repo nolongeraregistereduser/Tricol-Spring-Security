@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AuditService {
+public class AuditService implements IAuditService {
 
     private final AuditLogRepository auditLogRepository;
 

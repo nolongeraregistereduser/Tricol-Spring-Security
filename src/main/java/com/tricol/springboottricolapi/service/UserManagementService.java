@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserManagementService {
+public class UserManagementService implements IUserManagementService {
 
     private final UserAppRepository userRepository;
     private final PermissionRepository permissionRepository;

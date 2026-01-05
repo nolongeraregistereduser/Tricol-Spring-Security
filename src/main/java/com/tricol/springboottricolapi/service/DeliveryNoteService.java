@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class DeliveryNoteService {
+public class DeliveryNoteService implements IDeliveryNoteService {
 
     private final DeliveryNoteRepository deliveryNoteRepository;
     private final ProductRepository productRepository;
